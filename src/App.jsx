@@ -133,7 +133,7 @@ const ResponsivasApp = () => {
     .sub-title {
       text-align: right;
       font-size: 12px;
-      margin-top: -10px;
+      
       margin-bottom: 30px;
     }
     .section {
@@ -185,14 +185,14 @@ const ResponsivasApp = () => {
   <div class="sub-title">Fecha: ${new Date().toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
 
   <div class="section">
-    <div class="bold">Datos del Empleado:</div>
+    <div class="bold">Datos del Empleado</div>
     <p><strong>Nombre:</strong> ${empleado?.nombre_empleado || 'No especificado'}</p>
     <p><strong>Correo electrónico:</strong> ${empleado?.correo || 'No especificado'}</p>
     <p><strong>Puesto:</strong> ${empleado?.puesto || 'No especificado'}</p>
   </div>
 
   <div class="section">
-    <div class="bold">Datos del Equipo:</div>
+    <div class="bold">Datos del Equipo</div>
     <p><strong>Equipo:</strong> ${equipo?.nombre || 'No especificado'}</p>
     <p><strong>Marca:</strong> ${equipo?.marca || 'No especificado'}</p>
     <p><strong>Modelo:</strong> ${equipo?.modelo || 'No especificado'}</p>
