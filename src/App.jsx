@@ -200,9 +200,9 @@ const ResponsivasApp = () => {
   </div>
 
   <div class="section">
-    <div class="bold">Información de la Asignación:</div>
+    
     <p><strong>Fecha de asignación:</strong> ${formatDate(asignacion.fecha_asignacion)}</p>
-    ${asignacion.fecha_devolucion ? `<p><strong>Fecha de devolución:</strong> ${formatDate(asignacion.fecha_devolucion)}</p>` : ''}
+    
     ${asignacion.observaciones ? `<p><strong>Observaciones:</strong> ${asignacion.observaciones}</p>` : ''}
   </div>
 
