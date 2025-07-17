@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, User, Monitor, HardDrive, Cpu, Settings, Building, Mail, MapPin, ArrowLeft, ArrowRight, Download, FileText } from 'lucide-react';
 import { fetchSupabaseData } from './utils/supaBaseData';
 import { generatePDF } from './utils/generatePDF';
+import { formatDate, getEstadoAsignacion } from './utils/chalanes';
 const ResponsivasApp = () => {
   const [asignaciones, setAsignaciones] = useState([]);
   const [equipos, setEquipos] = useState([]);
@@ -48,23 +49,9 @@ const ResponsivasApp = () => {
     return equipos.find(eq => eq.id === id);
   };
 
-  // Función para formatear fechas
-  const formatDate = (dateString) => {
-    if (!dateString) return 'No especificada';
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  
 
-  // Función para determinar el estado de la asignación
-  const getEstadoAsignacion = (fechaDevolucion) => {
-    if (!fechaDevolucion) {
-      return { texto: 'Activa', color: 'bg-green-100 text-green-800' };
-    }
-    return { texto: 'Devuelta', color: 'bg-gray-100 text-gray-800' };
-  };
+  
 
   
 
