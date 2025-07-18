@@ -16,3 +16,5 @@ export const formatDate = (dateString) => {
     }
     return { texto: 'Devuelta', color: 'bg-gray-100 text-gray-800' };
   };
+
+  
