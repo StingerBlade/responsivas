@@ -134,7 +134,7 @@ const ResponsivasApp = () => {
       </div>
 
       {/* Contenido principal con layout 2/3 - 1/3 */}
-      <div className=" w-[90%] mx-auto px-4 sm:px-6 lg:[90%] py-8">
+      <div className=" h-min mx-auto px-4 sm:px-6 lg:px-8 py-8 h-min">
         {asignaciones.length === 0 ? (
           <div className="text-center py-12">
             <Monitor className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -182,7 +182,7 @@ const ResponsivasApp = () => {
             </div>
 
             {/* Columna derecha - Detalle completo (1/3) */}
-            <div className="w-1/3">
+            <div className="w-1/3  h-min">
               <div className="bg-white rounded-lg shadow-sm border h-full">
                 <div className="px-4 py-3 border-b border-gray-200">
                   <h2 className="text-lg font-medium text-gray-900">
