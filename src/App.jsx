@@ -11,6 +11,32 @@ const ResponsivasApp = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [generatingPDF, setGeneratingPDF] = useState(false);
+  const [busqueda, setBusqueda] = useState('');
+
+// Función para encontrar empleado por ID
+  const findEmpleado = (id) => {
+    return empleados.find(emp => emp.id === id);
+  };
+
+  // Función para encontrar equipo por ID
+  const findEquipo = (id) => {
+    return equipos.find(eq => eq.id === id);
+  };
+  const asignacionesFiltradas = asignaciones.filter((asignacion) => {
+    const empleado = findEmpleado(asignacion.fk_empleado_id);
+    const equipo = findEquipo(asignacion.fk_equipo_id);
+
+    const textoBusqueda = busqueda.toLowerCase();
+
+    // Buscar por nombre o ID de empleado/equipo
+    return (
+      empleado?.nombre?.toLowerCase().includes(textoBusqueda) ||
+      
+      equipo?.nombre?.toLowerCase().includes(textoBusqueda) 
+      
+    );
+  });
+  
 
 
   // Cargar datos al montar el componente
@@ -40,15 +66,7 @@ const ResponsivasApp = () => {
     loadData();
   }, []);
 
-  // Función para encontrar empleado por ID
-  const findEmpleado = (id) => {
-    return empleados.find(emp => emp.id === id);
-  };
-
-  // Función para encontrar equipo por ID
-  const findEquipo = (id) => {
-    return equipos.find(eq => eq.id === id);
-  };
+  
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -86,7 +104,15 @@ const ResponsivasApp = () => {
               <h1 className="text-xl font-semibold text-gray-900">
                 Sistema de Responsivas
               </h1>
-              <input type="search" name="" id="" />
+              <input 
+              type="search"
+              name="" 
+              id=""
+              className='ml-6 px-3 py-1 border border-gray-300 rounded-md'
+              placeholder='Buscar por empleado o equipo'
+              value={busqueda}
+              onChange={(e)=>setBusqueda(e.target.value)}
+              />
             </div>
             <div className="text-sm text-gray-500">
               {asignaciones.length} asignaciones encontradas
@@ -109,11 +135,11 @@ const ResponsivasApp = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {asignaciones.map((asignacion) => {
+            {asignacionesFiltradas.map((asignacion) => {
               const empleado = findEmpleado(asignacion.fk_empleado_id);
               const equipo = findEquipo(asignacion.fk_equipo_id);
               const estado = getEstadoAsignacion(asignacion.fecha_devolucion);
-
+              
               return (
                 <Tarjeta
                 key={asignacion.id}
