@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, User, Monitor, HardDrive, Cpu, Settings, Building, Mail, MapPin, ArrowLeft, ArrowRight, Download, FileText } from 'lucide-react';
+import { Calendar, User, Monitor, HardDrive, Cpu, Settings, Building, Mail, MapPin, ArrowLeft, ArrowRight, Download, FileText} from 'lucide-react';
 import { fetchSupabaseData } from './utils/supaBaseData';
 import TarjetaCompacta from './components/tarjetaCompacta';
 import DetalleCompleto from './components/detalleCompleto';
@@ -108,31 +108,32 @@ const ResponsivasApp = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
+      <div className="bg-white shadow-sm border-b w-full">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex items-center justify-between h-16 w-full">
+            <div className="flex items-center w-full">
               <Monitor className="h-8 w-8 text-blue-600 mr-3" />
+              
               <h1 className="text-xl font-semibold text-gray-900">
                 Sistema de Responsivas
               </h1>
               <input 
                 type="search"
-                name="" 
-                id=""
-                className='ml-6 px-3 py-1 border border-gray-300 rounded-md'
-                placeholder='Buscar por empleado, equipo o serie'
+                className="ml-6 px-3 py-1 border border-gray-300 rounded-md flex-1 min-w-0"
+                placeholder="Nombre de empleado, equipo o N/S"
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
+                style={{ maxWidth: '500px' }}
               />
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500 whitespace-nowrap ml-4">
               {asignacionesFiltradas.length} asignaciones encontradas
             </div>
           </div>
         </div>
       </div>
 
+      {/* Contenido principal con
       {/* Contenido principal con layout 2/3 - 1/3 */}
       <div className=" h-min mx-auto px-4 sm:px-6 lg:px-8 py-8 h-min">
         {asignaciones.length === 0 ? (
