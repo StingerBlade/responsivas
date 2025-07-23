@@ -44,7 +44,7 @@ const TarjetaCompacta = ({ asignacion, empleado, equipo, estado, isSelected, onC
           {equipo?.nombre || 'Equipo no encontrado'}
         </p>
         <p className="text-xs text-gray-600 font-mono">
-          S/N: {equipo?.numero_serie || 'No especificado'}
+          N/S: {equipo?.numero_serie || 'No especificado'}
         </p>
         {equipo?.marca && equipo?.modelo && (
           <p className="text-xs text-gray-600">
