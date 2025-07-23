@@ -26,11 +26,6 @@ const DetalleCompleto = ({
   return (
     <div className="p-4 space-y-6">
       {/* Estado */}
-      <div className="flex justify-center">
-        <span className={`px-3 py-1 rounded-full text-sm font-medium ${estado.color}`}>
-          {estado.texto}
-        </span>
-      </div>
 
       {/* Información del empleado */}
       <div className="space-y-3">

@@ -149,7 +149,7 @@ const ResponsivasApp = () => {
         ) : (
           <div className="flex gap-6 h-[calc(100vh-200px)]">
             {/* Columna izquierda - Lista de tarjetas (2/3) */}
-            <div className="w-2/3 h-min">
+            <div className="w-2/3">
               <div className="bg-white rounded-lg shadow-sm border h-full flex flex-col">
                 <div className="px-4 py-3 border-b border-gray-200">
                   <h2 className="text-lg font-medium text-gray-900">Lista de Responsivas</h2>
