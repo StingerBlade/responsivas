@@ -24,17 +24,17 @@ const DetalleCompleto = ({
   setGeneratingPDF
 }) => {
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-3 space-y-6">
       {/* Estado */}
 
       {/* Información del empleado */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         <div className="flex items-center">
           <User className="h-5 w-5 text-blue-600 mr-2" />
           <h4 className="font-semibold text-gray-900">Empleado</h4>
         </div>
         {empleado ? (
-          <div className="bg-gray-50 p-3 rounded-lg space-y-2">
+          <div className="bg-gray-50 p-2 rounded-lg space-y-2">
             <div>
               <span className="text-sm font-medium text-gray-700">Nombre:</span>
               <p className="text-sm text-gray-900">{empleado.nombre_empleado}</p>
@@ -115,7 +115,7 @@ const DetalleCompleto = ({
       </div>
 
       {/* Información de la asignación */}
-      <div className="space-y-3">
+      <div className="space-y-1">
         <div className="flex items-center">
           <Calendar className="h-5 w-5 text-purple-600 mr-2" />
           <h4 className="font-semibold text-gray-900">Asignación</h4>
