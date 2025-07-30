@@ -1,6 +1,8 @@
 import { User, Monitor } from 'lucide-react';
 
-const TarjetaCompacta = ({ asignacion, empleado, equipo, estado, isSelected, onClick }) => {
+const TarjetaCompacta = ({ asignacion, empleado, equipo, estado, isSelected, onClick, tipo = 'asignaciones' }) => {
+  const tipoTexto = tipo === 'asignaciones' ? 'Responsiva' : 'Préstamo';
+  
   return (
     <div 
       className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 hover:shadow-md ${
@@ -10,10 +12,10 @@ const TarjetaCompacta = ({ asignacion, empleado, equipo, estado, isSelected, onC
       }`}
       onClick={onClick}
     >
-      {/* Header con número de responsiva y estado */}
+      {/* Header con número de responsiva/préstamo y estado */}
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-gray-900">
-          Responsiva #{asignacion.id}
+          {tipoTexto} #{asignacion.id}
         </h3>
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${estado.color}`}>
           {estado.texto}

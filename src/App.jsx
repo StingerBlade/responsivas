@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, User, Monitor, HardDrive, Cpu, Settings, Building, Mail, MapPin, ArrowLeft, ArrowRight, Download, FileText} from 'lucide-react';
+import { Calendar, User, Monitor, HardDrive, Cpu, Settings, Building, Mail, MapPin, ArrowLeft, ArrowRight, Download, FileText, ToggleLeft, ToggleRight} from 'lucide-react';
 import { fetchSupabaseData } from './utils/supaBaseData';
 import TarjetaCompacta from './components/tarjetaCompacta';
 import DetalleCompleto from './components/detalleCompleto';
@@ -8,6 +8,7 @@ import { formatDate, getEstadoAsignacion } from './utils/chalanes';
 
 const ResponsivasApp = () => {
   const [asignaciones, setAsignaciones] = useState([]);
+  const [prestamos, setPrestamos] = useState([]);
   const [equipos, setEquipos] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +16,7 @@ const ResponsivasApp = () => {
   const [generatingPDF, setGeneratingPDF] = useState(false);
   const [busqueda, setBusqueda] = useState('');
   const [asignacionSeleccionada, setAsignacionSeleccionada] = useState(null);
+  const [vistaActual, setVistaActual] = useState('asignaciones'); // 'asignaciones' o 'prestamos'
 
   // Función para encontrar empleado por ID
   const findEmpleado = (id) => {
@@ -26,9 +28,12 @@ const ResponsivasApp = () => {
     return equipos.find(eq => eq.id === id);
   };
 
-  const asignacionesFiltradas = asignaciones.filter((asignacion) => {
-    const empleado = findEmpleado(asignacion.fk_empleado_id);
-    const equipo = findEquipo(asignacion.fk_equipo_id);
+  // Obtener los datos actuales según la vista
+  const datosActuales = vistaActual === 'asignaciones' ? asignaciones : prestamos;
+
+  const datosFiltrados = datosActuales.filter((item) => {
+    const empleado = findEmpleado(item.fk_empleado_id);
+    const equipo = findEquipo(item.fk_equipo_id);
 
     const textoBusqueda = busqueda.toLowerCase();
 
@@ -40,26 +45,36 @@ const ResponsivasApp = () => {
     );
   });
 
+  // Función para cambiar de vista
+  const cambiarVista = (nuevaVista) => {
+    setVistaActual(nuevaVista);
+    setBusqueda(''); // Limpiar búsqueda al cambiar
+    setAsignacionSeleccionada(null); // Limpiar selección
+  };
+
   // Cargar datos al montar el componente
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
 
-        // Cargar datos de las tres tablas en paralelo
-        const [asignacionesData, equiposData, empleadosData] = await Promise.all([
+        // Cargar datos de las cuatro tablas en paralelo
+        const [asignacionesData, prestamosData, equiposData, empleadosData] = await Promise.all([
           fetchSupabaseData('app_asignacion'),
+          fetchSupabaseData('app_prestamo'),
           fetchSupabaseData('app_equipo'),
           fetchSupabaseData('app_empleado')
         ]);
 
         setAsignaciones(asignacionesData);
+        setPrestamos(prestamosData);
         setEquipos(equiposData);
         setEmpleados(empleadosData);
 
-        // Seleccionar la primera asignación por defecto si existe
-        if (asignacionesData.length > 0) {
-          setAsignacionSeleccionada(asignacionesData[0]);
+        // Seleccionar el primer elemento por defecto si existe
+        const datosIniciales = vistaActual === 'asignaciones' ? asignacionesData : prestamosData;
+        if (datosIniciales.length > 0) {
+          setAsignacionSeleccionada(datosIniciales[0]);
         }
 
       } catch (err) {
@@ -72,21 +87,31 @@ const ResponsivasApp = () => {
     loadData();
   }, []);
 
-  // Actualizar selección cuando cambian los filtros
+  // Actualizar selección cuando cambian los filtros o la vista
   useEffect(() => {
-    if (asignacionesFiltradas.length > 0 && !asignacionesFiltradas.find(a => a.id === asignacionSeleccionada?.id)) {
-      setAsignacionSeleccionada(asignacionesFiltradas[0]);
-    } else if (asignacionesFiltradas.length === 0) {
+    if (datosFiltrados.length > 0 && !datosFiltrados.find(a => a.id === asignacionSeleccionada?.id)) {
+      setAsignacionSeleccionada(datosFiltrados[0]);
+    } else if (datosFiltrados.length === 0) {
       setAsignacionSeleccionada(null);
     }
-  }, [asignacionesFiltradas, asignacionSeleccionada]);
+  }, [datosFiltrados, asignacionSeleccionada]);
+
+  // Actualizar selección cuando cambia la vista
+  useEffect(() => {
+    const datosVista = vistaActual === 'asignaciones' ? asignaciones : prestamos;
+    if (datosVista.length > 0) {
+      setAsignacionSeleccionada(datosVista[0]);
+    } else {
+      setAsignacionSeleccionada(null);
+    }
+  }, [vistaActual, asignaciones, prestamos]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando responsivas...</p>
+          <p className="text-gray-600">Cargando datos...</p>
         </div>
       </div>
     );
@@ -115,8 +140,33 @@ const ResponsivasApp = () => {
               <Monitor className="h-8 w-8 text-blue-600 mr-3" />
               
               <h1 className="text-xl font-semibold text-gray-900">
-                Sistema de Responsivas
+                Sistema de {vistaActual === 'asignaciones' ? 'Responsivas' : 'Préstamos'}
               </h1>
+
+              {/* Switch de vista */}
+              <div className="ml-6 flex items-center space-x-3 bg-gray-100 rounded-lg p-1">
+                <button
+                  onClick={() => cambiarVista('asignaciones')}
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                    vistaActual === 'asignaciones'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Asignaciones
+                </button>
+                <button
+                  onClick={() => cambiarVista('prestamos')}
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                    vistaActual === 'prestamos'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Préstamos
+                </button>
+              </div>
+              
               <input 
                 type="search"
                 className="ml-6 px-3 py-1 border border-gray-300 rounded-md flex-1 min-w-0"
@@ -127,23 +177,22 @@ const ResponsivasApp = () => {
               />
             </div>
             <div className="text-sm text-gray-500 whitespace-nowrap ml-4">
-              {asignacionesFiltradas.length} asignaciones encontradas
+              {datosFiltrados.length} {vistaActual} encontradas
             </div>
           </div>
         </div>
       </div>
 
-      {/* Contenido principal con
       {/* Contenido principal con layout 2/3 - 1/3 */}
-      <div className=" h-min mx-auto px-4 sm:px-6 lg:px-8 py-8 h-min">
-        {asignaciones.length === 0 ? (
+      <div className="h-min mx-auto px-4 sm:px-6 lg:px-8 py-8 h-min">
+        {datosActuales.length === 0 ? (
           <div className="text-center py-12">
             <Monitor className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No hay asignaciones disponibles
+              No hay {vistaActual} disponibles
             </h3>
             <p className="text-gray-600">
-              No se encontraron asignaciones en la base de datos.
+              No se encontraron {vistaActual} en la base de datos.
             </p>
           </div>
         ) : (
@@ -152,28 +201,31 @@ const ResponsivasApp = () => {
             <div className="w-2/3">
               <div className="bg-white rounded-lg shadow-sm border h-full flex flex-col">
                 <div className="px-4 py-3 border-b border-gray-200">
-                  <h2 className="text-lg font-medium text-gray-900">Lista de Responsivas</h2>
+                  <h2 className="text-lg font-medium text-gray-900">
+                    Lista de {vistaActual === 'asignaciones' ? 'Responsivas' : 'Préstamos'}
+                  </h2>
                 </div>
                 <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                  {asignacionesFiltradas.length === 0 ? (
+                  {datosFiltrados.length === 0 ? (
                     <div className="text-center py-8">
                       <p className="text-gray-500">No se encontraron resultados para tu búsqueda.</p>
                     </div>
                   ) : (
-                    asignacionesFiltradas.map((asignacion) => {
-                      const empleado = findEmpleado(asignacion.fk_empleado_id);
-                      const equipo = findEquipo(asignacion.fk_equipo_id);
-                      const estado = getEstadoAsignacion(asignacion.fecha_devolucion);
+                    datosFiltrados.map((item) => {
+                      const empleado = findEmpleado(item.fk_empleado_id);
+                      const equipo = findEquipo(item.fk_equipo_id);
+                      const estado = getEstadoAsignacion(item.fecha_devolucion);
                       
                       return (
                         <TarjetaCompacta
-                          key={asignacion.id}
-                          asignacion={asignacion}
+                          key={item.id}
+                          asignacion={item}
                           empleado={empleado}
                           equipo={equipo}
                           estado={estado}
-                          isSelected={asignacionSeleccionada?.id === asignacion.id}
-                          onClick={() => setAsignacionSeleccionada(asignacion)}
+                          isSelected={asignacionSeleccionada?.id === item.id}
+                          onClick={() => setAsignacionSeleccionada(item)}
+                          tipo={vistaActual}
                         />
                       );
                     })
@@ -183,11 +235,14 @@ const ResponsivasApp = () => {
             </div>
 
             {/* Columna derecha - Detalle completo (1/3) */}
-            <div className="w-1/3  h-min">
+            <div className="w-1/3 h-min">
               <div className="bg-white rounded-lg shadow-sm border h-full">
                 <div className="px-4 py-3 border-b border-gray-200">
                   <h2 className="text-lg font-medium text-gray-900">
-                    {asignacionSeleccionada ? `Detalle - Responsiva #${asignacionSeleccionada.id}` : 'Selecciona una responsiva'}
+                    {asignacionSeleccionada 
+                      ? `Detalle - ${vistaActual === 'asignaciones' ? 'Responsiva' : 'Préstamo'} #${asignacionSeleccionada.id}` 
+                      : `Selecciona un${vistaActual === 'asignaciones' ? 'a responsiva' : ' préstamo'}`
+                    }
                   </h2>
                 </div>
                 <div className="h-full overflow-y-auto">
@@ -201,12 +256,15 @@ const ResponsivasApp = () => {
                       generatePDF={generatePDF}
                       generatingPDF={generatingPDF}
                       setGeneratingPDF={setGeneratingPDF}
+                      tipo={vistaActual}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full">
                       <div className="text-center text-gray-500">
                         <Monitor className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                        <p>Selecciona una responsiva de la lista para ver sus detalles completos</p>
+                        <p>
+                          Selecciona un{vistaActual === 'asignaciones' ? 'a responsiva' : ' préstamo'} de la lista para ver sus detalles completos
+                        </p>
                       </div>
                     </div>
                   )}
