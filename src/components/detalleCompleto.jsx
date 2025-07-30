@@ -27,6 +27,9 @@ const DetalleCompleto = ({
   const tipoTexto = tipo === 'asignaciones' ? 'Asignación' : 'Préstamo';
   const tipoMinuscula = tipo === 'asignaciones' ? 'asignado' : 'prestado';
   
+  // Determinar la fecha correcta según el tipo
+  const fechaInicial = tipo === 'asignaciones' ? asignacion.fecha_asignacion : asignacion.fecha_prestamo;
+  
   return (
     <div className="p-3 space-y-6">
       {/* Información del empleado */}
@@ -126,7 +129,7 @@ const DetalleCompleto = ({
           <div className="flex items-center text-sm text-gray-600">
             <ArrowRight className="h-4 w-4 mr-1 flex-shrink-0" />
             <span className="font-medium min-w-[70px]">{tipoTexto.charAt(0).toUpperCase() + tipoMinuscula.slice(1)}:</span>
-            <span className="ml-2">{formatDate(asignacion.fecha_asignacion)}</span>
+            <span className="ml-2">{formatDate(fechaInicial)}</span>
           </div>
           {asignacion.fecha_devolucion && (
             <div className="flex items-center text-sm text-gray-600">
