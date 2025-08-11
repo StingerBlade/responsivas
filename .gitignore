@@ -7,4 +7,5 @@
 /.DS_Store
 /dist
 /.cache
-/.next          
+/.next      
+node_modules/    
